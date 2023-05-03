@@ -7,7 +7,7 @@ const routingFunction = require('./routes/routesIndex');
 const {errorLogger, errorHandler} = require('./middlewares/error.handler');
 // -- }
 
-app.get('/api', (req,res) => {
+app.get('/', (req,res) => {
     res.send('Express Server!')
 })
 
