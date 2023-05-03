@@ -34,17 +34,20 @@ router.patch('/:id', async (req,res,next) => {
         const body = req.body;
 
         const patched = await service.update(id,body);
-        res.json(patched);
+        res.json({
+            message: "Object Updated",
+            data: body
+        });
     } catch (error) {
         next(error)
     }
     
 });
 
-router.delete('/:id', (req,res,next) => {
+router.delete('/:id', async (req,res,next) => { //BUG
     try {
         const {id} = req.params;
-        service.delete(id);
+        await service.delete(id);
         res.json({
             message: 'Deleted',
             id: id
