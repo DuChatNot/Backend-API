@@ -1,4 +1,5 @@
 const {faker} = require('@faker-js/faker');
+const boom = require('boom');
 
 class Character {
     constructor () {
@@ -6,10 +7,10 @@ class Character {
         this.generate();
     }
 
-    generate(){
-        for (let i = 0; i < 150; i++){
+    async generate(){
+        for (let i = 0; i < 30; i++){
             this.characters.push({
-                id: i,
+                id: faker.datatype.uuid().slice(0,7),
                 name: faker.animal.crocodilia(),
                 last_seen: faker.address.cityName(),
                 company: faker.company.name(),
@@ -18,12 +19,49 @@ class Character {
         }
     }
 
-    find(){
+    async create(obj){
+        this.characters.push({
+            id: faker.datatype.uuid(),
+            ...obj
+        });
+    }
+
+    async find(){
         return this.characters;
     }
 
-    findOne(id){
-        return this.characters.find(p => p.id === id);
+    async findOne(id){ //Handling errors without Boom:
+        const index = this.characters.findIndex(p => p.id === id)
+        if (index !== -1){
+            const foundOne = this.characters.find(p => p.id === id);
+            return foundOne;
+        } else {
+            throw new Error('Object doesn´t exist')
+        }
+        
+    }
+
+    async update(id, update){
+        const index = this.characters.findIndex(p => p.id === id)
+        if (index === -1) {
+            throw boom.notFound("The object you are intending to reach doesn´t exist")
+        } else {
+            const character = this.characters[index];
+            this.characters[index] = {
+                ...character,
+                ...update
+            };
+        }
+        
+    }
+
+    async delete(id) {
+        const index = this.characters.findIndex(p => p.id === id);
+        if (index === -1){
+            throw boom.notFound("Can´t delete an unexisting object")
+        } else{
+            this.characters.splice(index,1);
+        }
     }
 }
 

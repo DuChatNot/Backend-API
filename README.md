@@ -1,2 +1,2 @@
 # Backend-API
-This repo holds my own API code
+This API was created for backend trainning purposes.

@@ -4,31 +4,54 @@ const router = express.Router();
 const service = new Character;
 
 
-router.get('/', (req,res) => {
-    res.json(service.find());
+router.get('/', async (req,res) => {
+    const list = await service.find()
+    res.json(list);
 })
 
-router.get('/:id',(req,res) => {
-    const {id} = req.params
-    const char = service.findOne(id)
-    res.json(char);
+router.get('/:id', async (req,res, next) => {
+    try {
+        const {id} = req.params
+        const found = await service.findOne(id)
+        res.json(found);
+    } catch (error) {
+        next(error);
+    }
 });
 
-router.post('/', (req,res) => {
-    res.status(201);
+router.post('/', async (req,res) => {
     const body = req.body;
-    res.json({
+    await service.create(body);
+    res.status(201).json({
         message:'Created',
-        body
+        body: body
     })
-})
+});
 
-router.delete('/', (req,res) => {
-    const {id} = req.params;
-    res.json({
-        message: 'Deleted',
-        id: id
-    })
-})
+router.patch('/:id', async (req,res,next) => {
+    try {
+        const {id} = req.params;
+        const body = req.body;
+
+        const patched = await service.update(id,body);
+        res.json(patched);
+    } catch (error) {
+        next(error)
+    }
+    
+});
+
+router.delete('/:id', (req,res,next) => {
+    try {
+        const {id} = req.params;
+        service.delete(id);
+        res.json({
+            message: 'Deleted',
+            id: id
+        });
+    } catch (error){
+        next(error);
+    }
+});
 
 module.exports = router;
