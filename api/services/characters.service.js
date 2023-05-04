@@ -10,7 +10,7 @@ class Character {
     async generate(){
         for (let i = 0; i < 30; i++){
             this.characters.push({
-                id: faker.datatype.uuid().slice(0,7),
+                id: faker.datatype.uuid(),
                 name: faker.animal.crocodilia(),
                 last_seen: faker.address.cityName(),
                 company: faker.company.name(),

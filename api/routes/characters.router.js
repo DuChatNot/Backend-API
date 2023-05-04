@@ -3,15 +3,21 @@ const express = require('express');
 const router = express.Router();
 const service = new Character;
 
+const validator = require('../middlewares/joiValidator.handler');
+
+// -- Joi Schemas {
+const {characterSchema,  updateCharacter, getCharacter } = require('../JoiSchemas/schemas')
+// -- }
 
 router.get('/', async (req,res) => {
     const list = await service.find()
     res.json(list);
 })
 
-router.get('/:id', async (req,res, next) => {
+router.get('/:id', validator(getCharacter, 'params'),
+async (req,res, next) => {
     try {
-        const {id} = req.params
+        const {id} = req.params;
         const found = await service.findOne(id)
         res.json(found);
     } catch (error) {
@@ -19,7 +25,8 @@ router.get('/:id', async (req,res, next) => {
     }
 });
 
-router.post('/', async (req,res) => {
+router.post('/', validator(characterSchema, 'body'),
+async (req,res) => {
     const body = req.body;
     await service.create(body);
     res.status(201).json({
@@ -28,7 +35,10 @@ router.post('/', async (req,res) => {
     })
 });
 
-router.patch('/:id', async (req,res,next) => {
+router.patch('/:id',
+validator(getCharacter, 'params'), //Verify ID, if exists continue...
+validator(updateCharacter, 'body'),
+async (req,res,next) => {
     try {
         const {id} = req.params;
         const body = req.body;

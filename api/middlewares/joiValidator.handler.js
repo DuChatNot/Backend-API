@@ -1,6 +1,6 @@
 const boom = require('@hapi/boom');
 
-function validatorHandler (schema, prop){ 
+function validator(schema, prop){ 
   return (req, res, next) => { // Closure
     const data = req[prop]; // req.body / req.params / req.query
     const {error} = schema.validate(data);
@@ -12,4 +12,4 @@ function validatorHandler (schema, prop){
   }
 }
 
-module.exports = validatorHandler;
+module.exports = validator;
