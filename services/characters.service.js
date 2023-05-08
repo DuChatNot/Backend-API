@@ -55,7 +55,7 @@ class Character {
         
     }
 
-    async delete(id) { //BUG
+    async delete(id) { 
         const index = this.characters.findIndex(p => p.id === id);
         if (index === -1){
             throw new Error("Error 404, Can´t delete an unexisting object")
