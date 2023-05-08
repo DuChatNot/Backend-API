@@ -1,10 +1,14 @@
 const {faker} = require('@faker-js/faker');
 const boom = require('boom');
 
+const pool = require('../libs/pool') //Pool conection 
+
 class Character {
     constructor () {
         this.characters = [];
         this.generate();
+        this.pool = pool;
+        this.pool.on('error', err => console.log(err))
     }
 
     async generate(){
@@ -27,7 +31,8 @@ class Character {
     }
 
     async find(){
-        return this.characters;
+        const res = await this.pool.query('SELECT * FROM people');
+        return res;
     }
 
     async findOne(id){ //Handling errors without Boom:

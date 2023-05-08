@@ -26,13 +26,17 @@ async (req,res, next) => {
 });
 
 router.post('/', validator(characterSchema, 'body'),
-async (req,res) => {
-    const body = req.body;
-    await service.create(body);
-    res.status(201).json({
-        message:'Created',
-        body: body
-    })
+async (req,res,next) => {
+    try {
+        const body = req.body;
+        await service.create(body);
+        res.status(201).json({
+            message:'Created',
+            body: body
+        })
+    } catch (err){
+        next(err);
+    }
 });
 
 router.patch('/:id',
